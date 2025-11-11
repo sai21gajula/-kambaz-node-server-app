@@ -1,0 +1,25 @@
+# Node dependencies
+node_modules/
+
+# Environment files (may contain secrets)
+.env
+.env.*
+
+# Logs
+logs
+*.log
+server.log
+npm-debug.log*
+
+# MacOS files
+.DS_Store
+
+# Client build and dependencies (if you keep a client folder here)
+client/node_modules/
+client/build/
+
+# Optional editor folders
+.vscode/
+
+# Lockfiles may be committed in some projects; uncomment if you want to ignore
+# package-lock.json
