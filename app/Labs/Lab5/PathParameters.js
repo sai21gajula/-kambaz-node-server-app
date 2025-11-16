@@ -21,11 +21,9 @@ export default function PathParameters(app) {
     const { a, b } = req.params
     const divisor = parseInt(b)
     if (divisor === 0) {
-      // avoid sending a raw integer (would be treated as status) — send string message
       return res.status(400).send('Cannot divide by zero')
     }
     const result = parseInt(a) / divisor
-    // Use toString to make sure response isn't interpreted as status
     res.send(result.toString())
   }
 
@@ -35,4 +33,3 @@ export default function PathParameters(app) {
   app.get('/lab5/divide/:a/:b', divide)
 }
 
-// Path parameters handlers for Lab5
