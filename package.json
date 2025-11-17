@@ -19,6 +19,9 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "express": "^5.1.0"
+    "axios": "^1.13.2",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "uuid": "^13.0.0"
   }
 }
