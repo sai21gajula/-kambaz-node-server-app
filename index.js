@@ -4,6 +4,7 @@ import Lab5 from './Labs/Lab5/index.js'
 import db from './Kambaz/Database/index.js'
 import UserRoutes from './Kambaz/Users/routes.js'
 import CourseRoutes from './Kambaz/Courses/routes.js'
+import ModulesRoutes from './Kambaz/Modules/routes.js'
 import cors from 'cors'
 import session from 'express-session'
 import 'dotenv/config'
@@ -40,6 +41,7 @@ const PORT = process.env.PORT || 4000
 Hello(app)
 UserRoutes(app, db)
 CourseRoutes(app, db)
+ModulesRoutes(app, db)
 Lab5(app)
 
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`))

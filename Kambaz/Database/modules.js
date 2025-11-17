@@ -1,7 +1,7 @@
 export default[
   {
     "_id": "M101",
-    "name": "Introduction to Rocket Propulsion",
+    "name": "Introduction to Rocket Propulsion  ",
     "description": "Basic principles of rocket propulsion and rocket engines.",
     "course": "RS101",
     "lessons": [

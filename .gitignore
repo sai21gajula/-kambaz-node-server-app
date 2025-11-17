@@ -10,7 +10,7 @@ logs
 *.log
 server.log
 npm-debug.log*
-
+cookiejar.txt
 # MacOS files
 .DS_Store
 
