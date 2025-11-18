@@ -1,26 +1,32 @@
 import { v4 as uuidv4 } from "uuid";
 
 export default function UsersDao(db) {
-  let { users } = db;
-
   const createUser = (user) => {
     const newUser = { ...user, _id: uuidv4() };
-    users = [...users, newUser];
+    db.users = [...db.users, newUser];
     return newUser;
   };
 
-  const findAllUsers = () => users;
+  const findAllUsers = () => db.users;
 
-  const findUserById = (userId) => users.find((user) => user._id === userId);
+  const findUserById = (userId) => db.users.find((user) => user._id === userId);
 
-  const findUserByUsername = (username) => users.find((user) => user.username === username);
+  const findUserByUsername = (username) => db.users.find((user) => user.username === username);
 
   const findUserByCredentials = (username, password) =>
-    users.find((user) => user.username === username && user.password === password);
+    db.users.find((user) => user.username === username && user.password === password);
 
-  const updateUser = (userId, user) => (users = users.map((u) => (u._id === userId ? user : u)));
+  const updateUser = (userId, user) => (db.users = db.users.map((u) => (u._id === userId ? user : u)));
 
-  const deleteUser = (userId) => (users = users.filter((u) => u._id !== userId));
+  const deleteUser = (userId) => (db.users = db.users.filter((u) => u._id !== userId));
+
+  const findUsersInCourse = (courseId) => {
+    const { enrollments } = db;
+    const enrolledUserIds = enrollments
+      .filter((enrollment) => enrollment.course === courseId)
+      .map((enrollment) => enrollment.user);
+    return db.users.filter((user) => enrolledUserIds.includes(user._id));
+  };
 
   return {
     createUser,
@@ -30,5 +36,6 @@ export default function UsersDao(db) {
     findUserByCredentials,
     updateUser,
     deleteUser,
+    findUsersInCourse,
   };
 }
