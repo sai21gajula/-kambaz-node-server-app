@@ -11,14 +11,14 @@ import cors from 'cors'
 import session from 'express-session'
 import 'dotenv/config'
 
-const app = express()
+const app = express();
 
 app.use(
-	cors({
-		credentials: true,
-		origin: process.env.SERVER_ENV === 'development' ? '*' : process.env.CLIENT_URL || 'http://localhost:3000',
-	})
-)
+  cors({
+    credentials: true,
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
+  })
+);  
 
 const sessionOptions = {
   secret: process.env.SESSION_SECRET || 'kambaz',
