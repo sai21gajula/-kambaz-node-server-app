@@ -10,7 +10,10 @@ import EnrollmentsRoutes from './Kambaz/Enrollments/routes.js'
 import cors from 'cors'
 import session from 'express-session'
 import 'dotenv/config'
+import mongoose from "mongoose";
 
+const CONNECTION_STRING = process.env.DATABASE_CONNECTION_STRING || "mongodb+srv://root:root@groupnotes.7eg9saz.mongodb.net/kambaz"
+mongoose.connect(CONNECTION_STRING);
 const app = express();
 
 app.use(
