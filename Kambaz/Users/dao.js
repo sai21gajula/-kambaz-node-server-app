@@ -1,13 +1,25 @@
 import model from "./model.js";
 import { v4 as uuidv4 } from "uuid";
+import EnrollmentsDao from "../Enrollments/dao.js";
 
 export default function UsersDao(db) {
+  const enrollmentsDao = EnrollmentsDao(db);
+
   const createUser = (user) => {
     const newUser = { ...user, _id: uuidv4() };
     return model.create(newUser);
   };
 
   const findAllUsers = () => model.find();
+
+  const findUsersByRole = (role) => model.find({ role: role });
+
+  const findUsersByPartialName = (partialName) => {
+    const regex = new RegExp(partialName, "i");
+    return model.find({
+      $or: [{ firstName: { $regex: regex } }, { lastName: { $regex: regex } }],
+    });
+  };
 
   const findUserById = (userId) => model.findById(userId);
 
@@ -17,19 +29,18 @@ export default function UsersDao(db) {
 
   const updateUser = (userId, user) => model.updateOne({ _id: userId }, { $set: user });
 
-  const deleteUser = (userId) => model.deleteOne({ _id: userId });
+  const deleteUser = (userId) => model.findByIdAndDelete(userId);
 
   const findUsersInCourse = async (courseId) => {
-    const { enrollments } = db;
-    const enrolledUserIds = enrollments
-      .filter((enrollment) => enrollment.course === courseId)
-      .map((enrollment) => enrollment.user);
-    return model.find({ _id: { $in: enrolledUserIds } });
+    const users = await enrollmentsDao.findUsersForCourse(courseId);
+    return users;
   };
 
   return {
     createUser,
     findAllUsers,
+    findUsersByRole,
+    findUsersByPartialName,
     findUserById,
     findUserByUsername,
     findUserByCredentials,

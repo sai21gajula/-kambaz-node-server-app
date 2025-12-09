@@ -1,53 +1,58 @@
-import { v4 as uuidv4 } from "uuid"
+import { AssignmentModel } from "./model.js";
+import { v4 as uuidv4 } from "uuid";
 
 export default function AssignmentsDao(db) {
-  function getAssignmentsByCourse(courseId) {
-    const { assignments } = db
-    return assignments.filter((assignment) => assignment.course === courseId)
+  async function getAssignmentsByCourse(courseId) {
+    const assignments = await AssignmentModel.find({ course: courseId }).lean();
+    return assignments;
   }
 
-  function findAssignmentById(assignmentId) {
-    const { assignments } = db
-    return assignments.find((assignment) => assignment._id === assignmentId)
-  }
-
-  function createAssignmentForCourse(courseId, assignment, createdBy) {
-    const { assignments } = db
+  async function createAssignmentForCourse(courseId, assignment, createdBy) {
     const newAssignment = {
-      ...assignment,
       _id: uuidv4(),
       course: courseId,
-      createdBy: createdBy || "SYSTEM",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    }
-    db.assignments = [...assignments, newAssignment]
-    return newAssignment
+      title: assignment.title,
+      description: assignment.description || "",
+      points: assignment.points || 100,
+      due: assignment.due || null,
+      from: assignment.from || null,
+      until: assignment.until || null,
+    };
+
+    const result = await AssignmentModel.create(newAssignment);
+    return result.toObject();
   }
 
-  function updateAssignment(assignmentId, updates) {
-    const { assignments } = db
-    const assignment = assignments.find((a) => a._id === assignmentId)
-    if (!assignment) return null
-    Object.assign(assignment, updates, {
-      updatedAt: new Date().toISOString(),
-    })
-    return assignment
+  async function updateAssignment(assignmentId, updates) {
+    const updated = await AssignmentModel.findByIdAndUpdate(
+      assignmentId,
+      updates,
+      { new: true }
+    ).lean();
+    return updated;
   }
 
-  function deleteAssignment(assignmentId) {
-    const { assignments } = db
-    const index = assignments.findIndex((a) => a._id === assignmentId)
-    if (index === -1) return false
-    db.assignments = assignments.filter((a) => a._id !== assignmentId)
-    return true
+  async function deleteAssignment(assignmentId) {
+    const result = await AssignmentModel.deleteOne({ _id: assignmentId });
+    return result.deletedCount > 0;
+  }
+
+  async function findAssignmentById(assignmentId) {
+    const assignment = await AssignmentModel.findById(assignmentId).lean();
+    return assignment;
+  }
+
+  async function deleteAssignmentsByCourse(courseId) {
+    const result = await AssignmentModel.deleteMany({ course: courseId });
+    return result.deletedCount;
   }
 
   return {
     getAssignmentsByCourse,
-    findAssignmentById,
     createAssignmentForCourse,
     updateAssignment,
     deleteAssignment,
-  }
+    findAssignmentById,
+    deleteAssignmentsByCourse,
+  };
 }

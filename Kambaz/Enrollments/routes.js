@@ -3,40 +3,40 @@ import EnrollmentsDao from "../Enrollments/dao.js"
 export default function EnrollmentsRoutes(app, db) {
   const dao = EnrollmentsDao(db)
 
-  const findAllEnrollments = (req, res) => {
-    const enrollments = dao.findAllEnrollments()
+  const findAllEnrollments = async (req, res) => {
+    const enrollments = await dao.findAllEnrollments()
     res.json(enrollments)
   }
 
-  const findEnrollmentsForUser = (req, res) => {
+  const findEnrollmentsForUser = async (req, res) => {
     const { userId } = req.params
-    const enrollments = dao.findEnrollmentsForUser(userId)
+    const enrollments = await dao.findEnrollmentsForUser(userId)
     res.json(enrollments)
   }
 
-  const findEnrollmentsForCourse = (req, res) => {
+  const findEnrollmentsForCourse = async (req, res) => {
     const { courseId } = req.params
-    const enrollments = dao.findEnrollmentsForCourse(courseId)
+    const enrollments = await dao.findEnrollmentsForCourse(courseId)
     res.json(enrollments)
   }
 
-  const enrollUserInCourse = (req, res) => {
+  const enrollUserInCourse = async (req, res) => {
     const { userId, courseId } = req.body
 
     if (!userId || !courseId) {
       return res.status(400).json({ error: "Missing userId or courseId" })
     }
 
-    const enrollment = dao.enrollUserInCourse(userId, courseId)
+    const enrollment = await dao.enrollUserInCourse(userId, courseId)
     if (!enrollment) {
       return res.status(409).json({ error: "User already enrolled in course" })
     }
     res.status(201).json(enrollment)
   }
 
-  const unenrollUserFromCourse = (req, res) => {
+  const unenrollUserFromCourse = async (req, res) => {
     const { enrollmentId } = req.params
-    const enrollment = dao.unenrollUserFromCourse(enrollmentId)
+    const enrollment = await dao.unenrollUserFromCourseById(enrollmentId)
     if (!enrollment) {
       return res.status(404).json({ error: "Enrollment not found" })
     }
